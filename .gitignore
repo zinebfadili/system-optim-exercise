@@ -7,8 +7,13 @@ tmp/
 *~.nib
 local.properties
 .settings/
+.settings/*
 .loadpath
 .recommenders
+
+.externalToolBuilders/
+
+*.launch
 
 .classpath
 .project
