@@ -82,7 +82,7 @@ void simulatedAnnealing() {
 	int elapsed = 0; // the time elapsed is at 0
 	
 	// spent is the amount of time allowed to be spent at current temperature 
-	int spent = (int) Math.floor(BETA0*MAXTIME);  // BETA<1, we spend a fraction fo the maximum time for our entire simulation at the begining 
+	int spent = (int) Math.floor(BETA0*MAXTIME);  // BETA<1, we spend a fraction of the maximum time for our entire simulation at the begining 
 	//(because we're at high temperature)
 	int timer = spent; //our timer
   
@@ -100,7 +100,7 @@ void simulatedAnnealing() {
 			{
 				bestCost = curCost; // we have found a solution for which the cost is lowest to this point so we keep it as best cost
 			}
-				timer -= 1; // decrease the time by 1
+			timer -= 1; // decrease the timer by 1
 		}
 		elapsed += spent; // elapsed is the total time spent, so we add to it the time we just spent at the possible solution
 		System.out.println("At temperature T=" + temperature +", time spent : "+ spent +" out of "+ MAXTIME +". Total time spent so far :"+ elapsed +
