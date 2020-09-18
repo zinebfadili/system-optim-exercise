@@ -5,20 +5,24 @@ int WCETFactor() // ---------- not implemented yet
 	//calculates the WCETFactor, this function is called by the function cost()
 }
 
-int WCRT() //--------- not implemented yet
+boolean WCRT() //--------- not implemented yet
 {
+	
+	// R = C + I, longest response time = computation time + interference due to preemption by high priority tasks
 	//calculates the WRCT
 	//
 	/*
 	 * for(each task in Tasks){
 	 * 		I=0
 	 * 		do {
-	 * 			R=I+Ci;
-	 * 			if(R>Di) { return(unschedulable) }
-	 * 			I = sum(from j=1 to i-1) [(R/Tj)*Cj]s
-	 * 		} while (I+Ci > R)
+	 * 			R=I+Ci; // Computation time of the task + interferences
+	 * 			if(R>Di) { // if the worst case response time is bigger than the deadline, it means that the set is not schedulable
+	 * 				return(false); / we return false, i.e unschedulable
+	 * 			} 
+	 * 			I = sum(from j=1 to i-1) [(R/Tj)*Cj]; // otherwise we take into account the interferences
+	 * 		} while (I+Ci > R) // it means that the current R is not the actual worst case reponse time, so we continue calculating
 	 * }
-	 * return(schedulable)
+	 * return(true) // return schedulable
 	*/
 }
 
@@ -42,6 +46,8 @@ void printConfig()// ----------not implemented yet
 void exchange(Task taskA, Task taskB) // -------- not implemented yet
 {
 }
+
+//step and simulatedAnnealing are heavily inspired by peportier's algorithms on his git repository as he was my teacher last year.
 
 //step selects a neighbor configuration (a configuration where we have exchanged 2 tasks) and decides if the algorithm chooses them or not
 int step(int currentCost, float temperature)
