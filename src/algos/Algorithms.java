@@ -36,7 +36,16 @@ int cost() // ---------not implemented yet
 	// here we have to implement an algorithm that calculates the global cost of all the processors together, so that we can have a cost of a configuration
 	// meaning the global cost. 
 	// the cost is going to be calculated for the global situation, so globally (for all processors etc) how is it?
-	// = penalty*(WRCT-deadline) - averageWCETFactor
+	
+	
+	// 
+	/* call the WRCT function that is going to update the WRCT of each task for a processor
+	* and return if the current task situation is schedulable
+	* then if it isn't schedulable :
+	* cost = = penalty*(WRCT-deadline)
+	* if it is schedulable :
+	* cost = WRCT-deadline
+	*/
 }
 
 // print configuration
