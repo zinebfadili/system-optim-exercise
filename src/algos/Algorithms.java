@@ -7,22 +7,26 @@ int WCETFactor() // ---------- not implemented yet
 boolean WCRT() //--------- not implemented yet
 {
 	
+	
 	// R = C + I, longest response time = computation time + interference due to preemption by high priority tasks
 	//calculates the WRCT
 	//
 	/*
+        	
+	 * boolean schedulable = true;
 	 * for(each task in Tasks){
 	 * 		I=0
 	 //!!!!! Ci is WCET*WCET factor of the core !!!!!
 	 * 		do {
 	 * 			R=I+Ci; // Computation time of the task + interferences
 	 * 			if(R>Di) { // if the worst case response time is bigger than the deadline, it means that the set is not schedulable
-	 * 				return(false); / we return false, i.e unschedulable
+	 * 				schedulable = false;
 	 * 			} 
 	 * 			I = sum(from j=1 to i-1) [(R/Tj)*Cj]; // otherwise we take into account the interferences
 	 * 		} while (I+Ci > R) // it means that the current R is not the actual worst case reponse time, so we continue calculating
+	   WCRT[task] = R;
 	 * }
-	 * return(true) // return schedulable
+	 * return(schedulable) // return schedulable
 	*/
 }
 
