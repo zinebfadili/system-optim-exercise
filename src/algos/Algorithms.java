@@ -4,7 +4,7 @@ int WCETFactor() // ---------- not implemented yet
 	//calculates the WCETFactor, this function is called by the function cost()
 }
 
-boolean WCRT() //--------- not implemented yet
+int WCRT() //--------- not implemented yet
 {
 	
 	
@@ -13,20 +13,20 @@ boolean WCRT() //--------- not implemented yet
 	//
 	/*
         	
-	 * boolean schedulable = true;
+	 * int numberNonSchedulable = 0;
 	 * for(each task in Tasks){
 	 * 		I=0
 	 //!!!!! Ci is WCET*WCET factor of the core !!!!!
 	 * 		do {
 	 * 			R=I+Ci; // Computation time of the task + interferences
 	 * 			if(R>Di) { // if the worst case response time is bigger than the deadline, it means that the set is not schedulable
-	 * 				schedulable = false;
+	 * 				numberNonSchedulable++;
 	 * 			} 
 	 * 			I = sum(from j=1 to i-1) [(R/Tj)*Cj]; // otherwise we take into account the interferences
 	 * 		} while (I+Ci > R) // it means that the current R is not the actual worst case reponse time, so we continue calculating
 	   WCRT[task] = R;
 	 * }
-	 * return(schedulable) // return schedulable
+	 * return(numberNonSchedulable) // return number of tasks that are not schedulable
 	*/
 }
 
@@ -39,12 +39,9 @@ int cost() // ---------not implemented yet
 	
 	
 	// 
-	/* call the WRCT function that is going to update the WRCT of each task for a processor
-	* and return if the current task situation is schedulable
-	* then if it isn't schedulable :
-	* cost = = penalty*(WRCT-deadline)
-	* if it is schedulable :
-	* cost = WRCT-deadline
+	/* Ntotal =0; //total number of non schedulable tasks
+	* call the WRCT function that is going to update the WRCT of each task for each core and do Ntotal += the result of each call
+    * cost = Ntotal;
 	*/
 }
 
