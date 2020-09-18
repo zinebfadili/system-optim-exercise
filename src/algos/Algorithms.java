@@ -1,4 +1,3 @@
-
 // calculation of WCETFactor
 int WCETFactor() // ---------- not implemented yet
 {
@@ -32,7 +31,13 @@ int cost() // ---------not implemented yet
 	// here we have to implement an algorithm that calculates the global cost of all the processors together, so that we can have a cost of a configuration
 	// meaning the global cost. 
 	// the cost is going to be calculated for the global situation, so globally (for all processors etc) how is it?
-	// = penalty*(WRCT-deadline) - averageWCETFactor
+	// 
+	
+	//call the WRCT function, and then see if it's schedulable,
+	// if it's not schedulable, a big penalty * (WRCT-deadline)
+	// = penalty*(WRCT-deadline)
+	// if it's schedulable 
+	// = WRCT-deadline
 }
 
 // print configuration
