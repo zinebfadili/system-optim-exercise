@@ -13,6 +13,7 @@ boolean WCRT() //--------- not implemented yet
 	/*
 	 * for(each task in Tasks){
 	 * 		I=0
+	 //!!!!! Ci is WCET*WCET factor of the core !!!!!
 	 * 		do {
 	 * 			R=I+Ci; // Computation time of the task + interferences
 	 * 			if(R>Di) { // if the worst case response time is bigger than the deadline, it means that the set is not schedulable
@@ -31,13 +32,7 @@ int cost() // ---------not implemented yet
 	// here we have to implement an algorithm that calculates the global cost of all the processors together, so that we can have a cost of a configuration
 	// meaning the global cost. 
 	// the cost is going to be calculated for the global situation, so globally (for all processors etc) how is it?
-	// 
-	
-	//call the WRCT function, and then see if it's schedulable,
-	// if it's not schedulable, a big penalty * (WRCT-deadline)
-	// = penalty*(WRCT-deadline)
-	// if it's schedulable 
-	// = WRCT-deadline
+	// = penalty*(WRCT-deadline) - averageWCETFactor
 }
 
 // print configuration
