@@ -55,6 +55,7 @@ void printConfig()// ----------not implemented yet
 // exchange two tasks
 void exchange(Task taskA, Task taskB) // -------- not implemented yet
 {
+    // !!! we need to sort the tasks (by decreasing period) is the cores once we've exchanged the tasks
 }
 
 //step and simulatedAnnealing are heavily inspired by peportier's algorithms on his git repository as he was my teacher last year.
