@@ -1,26 +1,24 @@
 package algos;
 
 import java.util.List;
-
-import mcp.ConcreteTask;
 import mcp.Task;
 import java.util.Collections;
 public class PriorityAlgorithm {
-    List<ConcreteTask> tasks;
+    List<Task> tasks;
 
     
-    public List<ConcreteTask> SetPriorities()
+    public List<Task> SetPriorities()
     {
         Collections.sort(tasks);
         int i=1;
-        for (ConcreteTask concreteTask : tasks) {
+        for (Task concreteTask : tasks) {
             concreteTask.setPriority(i);
             i++;
         }
         return tasks;
     }
 
-    public PriorityAlgorithm(List<ConcreteTask> tasks) {
+    public PriorityAlgorithm(List<Task> tasks) {
         this.tasks = tasks;
     }
 }
