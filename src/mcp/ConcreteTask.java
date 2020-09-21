@@ -16,7 +16,15 @@ private Integer priority;
         return c1;
         return this.getId().compareTo(t.getId());
     }
-
+    
+    public ConcreteTask(Integer id, Integer WCET, Long d, Long p, Integer prio) {
+    	this.id = id;
+    	this.WCET = WCET;
+    	this.deadline = d;
+    	this.period = p;
+    	this.priority = prio;
+    }
+    
     public Long getDeadline() {
         return deadline;
     }
