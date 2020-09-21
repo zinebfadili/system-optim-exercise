@@ -56,4 +56,9 @@ public class Core {
 		tasks.add(i, t1);
 		return t2;
 	}
+
+	@Override
+	public String toString(){
+		return this.getId() + " " + this.WCETFactor;
+	}
 }
