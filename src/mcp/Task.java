@@ -1,6 +1,5 @@
 package mcp;
 
-
 public class Task implements ITask,Comparable<Task>{
 
 private Long deadline;
@@ -8,6 +7,13 @@ private Long period;
 private Integer id;
 private Integer WCET;
 private Integer priority;
+
+    public Task(Integer id, Long deadline, Integer WCET, Long period){
+        this.id = id;
+        this.deadline = deadline;
+        this.period = period;
+        this.WCET = WCET;
+    }
 
     @Override
     public int compareTo(Task t) {
@@ -55,6 +61,11 @@ private Integer priority;
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public String toString(){
+        return this.id + " " + this.deadline + " " + this.period + " " + this.WCET;
     }
 
 }
