@@ -102,4 +102,14 @@ public class Core {
 		return (int) Math.ceil(responseTime);
 		
 	}
+	
+	public int getLaxity() {
+		int laxity = 0;
+		int startTime = 0; // is start time always 0 in our case ?
+		for(int i = 0; i < tasks.size(); i++) {
+			laxity += tasks.get(i).getDeadline() - startTime - getWCRT(i);
+		}
+		
+		return laxity;
+	}
 }
