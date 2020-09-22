@@ -83,7 +83,20 @@ public class Core {
 		
 		return unschedulable;
 	}
-	
+	// not here	
+	public void removeTaskById(int id)
+	{
+		int index = 0;
+		for(Task aTask : tasks)
+		{
+			if(aTask.getId()==id)
+			{
+				break;
+			}
+			index++;
+		}
+		getTaskByIndex(index);
+	}
 	public int getWCRT(int i) {
 		
 		double ci = Math.ceil(tasks.get(i).getWCET()*WCETFactor);
