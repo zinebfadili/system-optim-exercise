@@ -32,9 +32,9 @@ public class Parser {
                 Element e = (Element) task;
                 // we create the task objects using the values inside the xml
                 Task tsk = new Task(Integer.parseInt(e.getAttribute("Id")),
-                                    Integer.parseInt(e.getAttribute("Deadline")),
+                                    Long.parseLong(e.getAttribute("Deadline")),
                                     Integer.parseInt(e.getAttribute("Period")),
-                                    Integer.parseInt(e.getAttribute("WCET")));
+                                    Long.parseLong(e.getAttribute("WCET")));
                 // we add the task to the list of tasks
                 tasks.add(tsk);
             }

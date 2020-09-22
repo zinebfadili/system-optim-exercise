@@ -1,6 +1,7 @@
 package mcp;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Core {
@@ -9,6 +10,11 @@ public class Core {
 	private double WCETFactor;
 	private List<Task> tasks;
 	
+	protected void sortTasks()
+	{
+		Comparator<Task> byPriority = Comparator.comparing(Task::getPriority);
+		tasks.sort(byPriority);
+	}
 	public Core(int id, double WCETFactor){
 		this.id = id;
 		this.WCETFactor = WCETFactor;
