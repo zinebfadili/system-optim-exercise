@@ -1,6 +1,6 @@
 package mcp;
 
-public class Task implements ITask,Comparable<Task>{
+public class Task implements Comparable<Task>{
 
 private Long deadline;
 private Long period;

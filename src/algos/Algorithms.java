@@ -1,7 +1,9 @@
 package algos;
 
 public class Algorithms {
+    public static void main(String[] args){
 
+    }
 }
 //// calculation of WCETFactor
 //int WCETFactor() // ---------- not implemented yet
@@ -96,7 +98,7 @@ public class Algorithms {
 //}
 //
 //}
-//
-//
+
+
 
 
