@@ -48,7 +48,13 @@ public class Core {
 	
 	public boolean addTaskList(List<Task> tasks) {
 		sorted = false;
-		return this.tasks.addAll(tasks);
+		boolean added = this.tasks.addAll(tasks);
+		if(added)
+		{
+			sortTasks();
+			sorted = true;
+		}
+		return added;
 	}
 	
 	public Task getTaskByIndex(int idx) {

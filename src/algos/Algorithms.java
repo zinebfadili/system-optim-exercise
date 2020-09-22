@@ -8,13 +8,14 @@ import mcp.MCP;
 import java.util.Collections;
 
 public class Algorithms {
-    private MCP mcp;
+    private List<MCP> mcps;
 
     //// calculation of cost
-    int cost(MCP mcp) // ---------not implemented yet
+    int cost() // ---------not implemented yet
     {
         int totalTasks = 0;
         int unschedulable = 0;
+        for(MCP mcp : mcps)
         for (Core core : mcp.getCores()) {
             unschedulable += core.getUnschedulable();
             totalTasks += core.getTasks().size();
@@ -74,18 +75,22 @@ public class Algorithms {
 
     // step selects a neighbor configuration (a configuration where we have
     // exchanged 2 tasks) and decides if the algorithm chooses them or not
-    int step(int currentCost, float temperature, int nbCores) {
-        int newCost, costDifference, randomCoreA, randomCoreB;
-        randomCoreA = (int) Math.random() % nbCores;
-        randomCoreB = (int) Math.random() % nbCores;
+    int step(int currentCost, float temperature) {
+        Task[] switchedTasks = new Task[2];
+        int newCost, costDifference, randomCoreA, randomCoreB, randomMCP1, randomMCP2;
+        randomMCP1 = (int) Math.random() % mcps.size();
+        randomMCP2 = (int) Math.random() % mcps.size();
+
+        randomCoreA = (int) Math.random() % mcps.get(randomMCP1).getCores().size();
+        randomCoreB = (int) Math.random() % mcps.get(randomMCP2).getCores().size();
         while (randomCoreA == randomCoreB) // so we don't exchange the same task with itself
         {
-            randomCoreA = (int) Math.random() % nbCores; // select another task
+            randomCoreA = (int) Math.random() % mcps.get(randomMCP1).getCores().size(); // select another task
         }
-        Core coreA = mcp.getCore(randomCoreA);
-        Core coreB = mcp.getCore(randomCoreB);
-        exchangeRandomTasks(coreA, coreB); // we exchange the two tasks
-        newCost = cost(mcp); // we calculate the cost of the new configuration
+        Core coreA = mcps.get(randomMCP1).getCore(randomCoreA);
+        Core coreB = mcps.get(randomMCP2).getCore(randomCoreB);
+        switchedTasks = exchangeRandomTasks(coreA, coreB); // we exchange the two tasks
+        newCost = cost(); // we calculate the cost of the new configuration
         int costDiff = newCost - currentCost; // the difference between the costs
         if (costDiff < 0) // the new cost is lower than the current one, they we definitely make the move
         {
@@ -99,7 +104,7 @@ public class Algorithms {
                 currentCost = newCost;
             } else { // if our random number is bigger than the temperature, we don't accept this new
                      // configuration, and we undo the change
-                exchangeRandomTasks(coreA, coreB); // undoing the exchange is basically redoing it (re-exchanging them)
+                undoExchange(switchedTasks,coreA, coreB); // undoing the exchange is basically redoing it (re-exchanging them)
             }
 
         }
@@ -108,10 +113,10 @@ public class Algorithms {
     }
 
     // simulated annealing
-    void simulatedAnnealing(float T0, int TIMEINIT, int MAXTIME, int nbCores, int BETA, int ALPHA) {
+    void simulatedAnnealing(float T0, int TIMEINIT, int MAXTIME, int BETA, int ALPHA) {
 
         boolean solutionFound = false; // the solution has not been found yet
-        int currentCost = cost(mcp); // the current cost is the one of the initial state
+        int currentCost = cost(); // the current cost is the one of the initial state
         int bestCost = currentCost; // the best cost is the current cost
         float temperature = T0; // the current temperature is the minimum temperature, the one entered T0
         int elapsed = 0; // the time elapsed is at 0
@@ -127,7 +132,7 @@ public class Algorithms {
         {
             bestCost = currentCost; // the best cost is the current cost
             while (timer != 0) { // we still have time at this temperature
-                currentCost = step(currentCost, temperature, nbCores); // we calculate the currentcost
+                currentCost = step(currentCost, temperature); // we calculate the currentcost
                 if (currentCost == 0) { // if the cost calculated is equal to zero, it means that we have found the best
                                         // solution we can stop
                     bestCost = currentCost; // the best cost is 0
