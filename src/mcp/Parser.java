@@ -10,9 +10,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 public class Parser {
-    public static ArrayList<Task> createTasksFromXml(String pathToXml){
+    public static ArrayList<ConcreteTask> createTasksFromXml(String pathToXml){
         // the list of tasks that are described in the xml file
-        ArrayList<Task> tasks = new ArrayList<Task>();
+        ArrayList<ConcreteTask> tasks = new ArrayList<ConcreteTask>();
         try {
             // we open the xml file with the data
             File fXmlFile = new File(pathToXml);
@@ -31,10 +31,11 @@ public class Parser {
                 Node task = tasksNodes.item(i);
                 Element e = (Element) task;
                 // we create the task objects using the values inside the xml
-                Task tsk = new Task(Integer.parseInt(e.getAttribute("Id")),
+                ConcreteTask tsk = new ConcreteTask(Integer.parseInt(e.getAttribute("Id")),
+                                    Integer.parseInt(e.getAttribute("WCET")),
                                     Long.parseLong(e.getAttribute("Deadline")),
-                                    Integer.parseInt(e.getAttribute("Period")),
-                                    Long.parseLong(e.getAttribute("WCET")));
+                                    Long.parseLong(e.getAttribute("Period"))
+                                    );
                 // we add the task to the list of tasks
                 tasks.add(tsk);
             }

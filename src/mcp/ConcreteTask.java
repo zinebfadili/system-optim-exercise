@@ -17,12 +17,11 @@ private Integer priority;
         return this.getId().compareTo(t.getId());
     }
     
-    public ConcreteTask(Integer id, Integer WCET, Long d, Long p, Integer prio) {
+    public ConcreteTask(Integer id, Integer WCET, Long d, Long p) {
     	this.id = id;
     	this.WCET = WCET;
     	this.deadline = d;
     	this.period = p;
-    	this.priority = prio;
     }
     
     public Long getDeadline() {
@@ -62,6 +61,14 @@ private Integer priority;
     }
 
     public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public ConcreteTask(Long deadline, Long period, Integer id, Integer wCET, Integer priority) {
+        this.deadline = deadline;
+        this.period = period;
+        this.id = id;
+        WCET = wCET;
         this.priority = priority;
     }
 
