@@ -11,7 +11,7 @@ private Integer priority;
 
     @Override
     public int compareTo(ConcreteTask t) {
-        int c1 = this.getDeadline().compareTo(t.getDeadline());
+        int c1 = this.getPeriod().compareTo(t.getPeriod());
         if(c1!=0)
         return c1;
         return this.getId().compareTo(t.getId());

@@ -14,7 +14,7 @@ public class Core {
 	
 	protected void sortTasks()
 	{
-		Comparator<Task> byPriority = Comparator.comparing(Task::getPriority);
+		Comparator<ConcreteTask> byPriority = Comparator.comparing(ConcreteTask::getPriority);
 		tasks.sort(byPriority);
 	}
 	public Core(int id, double WCETFactor){
