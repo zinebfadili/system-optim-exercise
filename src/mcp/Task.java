@@ -8,13 +8,6 @@ private Integer id;
 private Integer WCET;
 private Integer priority;
 
-    public Task(Integer id, Long deadline, Integer WCET, Long period){
-        this.id = id;
-        this.deadline = deadline;
-        this.period = period;
-        this.WCET = WCET;
-    }
-
     @Override
     public int compareTo(Task t) {
         int c1 = this.getPeriod().compareTo(t.getPeriod());
@@ -22,7 +15,14 @@ private Integer priority;
         return c1;
         return this.getId().compareTo(t.getId());
     }
-
+    
+    public Task(Integer id, Integer WCET, Long d, Long p) {
+    	this.id = id;
+    	this.WCET = WCET;
+    	this.deadline = d;
+    	this.period = p;
+    }
+    
     public Long getDeadline() {
         return deadline;
     }
@@ -63,9 +63,12 @@ private Integer priority;
         this.priority = priority;
     }
 
-    @Override
-    public String toString(){
-        return this.id + " " + this.deadline + " " + this.period + " " + this.WCET;
+    public Task(Long deadline, Long period, Integer id, Integer wCET, Integer priority) {
+        this.deadline = deadline;
+        this.period = period;
+        this.id = id;
+        WCET = wCET;
+        this.priority = priority;
     }
 
 }
