@@ -1,18 +1,19 @@
 package algos;
 
-import java.util.List;
-
-import mcp.Task;
 import mcp.Core;
 import mcp.MCP;
 import mcp.Parser;
-import java.util.Collections;
+import mcp.Task;
 
+import java.util.Comparator;
+import java.util.List;
+
+import java.util.Collections;
 public class Algorithms {
     private List<MCP> mcps;
 
     //// calculation of cost
-    static int cost() // ---------not implemented yet
+    int cost() // ---------not implemented yet
     {
         int totalTasks = 0;
         int unschedulable = 0;
@@ -33,11 +34,12 @@ public class Algorithms {
          * that is going to update the WRCT of each task for each core and do Ntotal +=
          * the result of each call cost = Ntotal;
          */
+        System.out.println("number of unschedulable : "+ unschedulable);
         return unschedulable / totalTasks;
     }
 
     // exchange tasks between two cores
-    static Task[] exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
+    Task[] exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
 	{
 		Task[] exchangedTasks = new Task[2];
 		Task taskA = coreA.getRandomTask();
@@ -52,7 +54,7 @@ public class Algorithms {
 		return exchangedTasks;	
 	}
 
-    static void undoExchange(Task[] tasks, Core coreA, Core coreB) {
+    void undoExchange(Task[] tasks, Core coreA, Core coreB) {
 
         coreA.removeTaskById(tasks[1].getId());
         coreB.removeTaskById(tasks[0].getId());
@@ -64,30 +66,6 @@ public class Algorithms {
 
     }
 
-    // print configuration
-    static void printConfig()
-    {
-        Core currentCore;
-        List<Task> currentTaskList;
-        System.out.println("-----------------------")
-        for (int i=0; i<mcps; i++)
-        {
-            System.out.println("MCP n°"+i);
-            for(int j=0; j<mcps.get(i).getCores.size())
-            {
-                System.out.print("Core n°"+j+" : ");
-                currentCore = mcps.get(i).getCores.get(j);
-                currentTaskList = currentCore.getTasks();
-                for (int k=0; k<currentTaskList.size(); k++)
-                {
-                    System.out.print(currentTaskList.get(k).getId()+" ");
-                }
-                System.out.println("-")
-            }
-            System.out.println("");
-        }
-    }
-
     //
 
     // step and simulatedAnnealing are heavily inspired by peportier's algorithms on
@@ -95,17 +73,18 @@ public class Algorithms {
 
     // step selects a neighbor configuration (a configuration where we have
     // exchanged 2 tasks) and decides if the algorithm chooses them or not
-    static int step(int currentCost, float temperature) {
+    //this algorithm is heavily inspired by peportier's git repository as he was one of the teammate's former teacher
+    int step(int currentCost, double temperature) {
         Task[] switchedTasks = new Task[2];
         int newCost, costDifference, randomCoreA, randomCoreB, randomMCP1, randomMCP2;
-        randomMCP1 = (int) (Math.random()*mcps.size()) % mcps.size();
-        randomMCP2 = (int) (Math.random()*mcps.size()) % mcps.size();
+        randomMCP1 = (int) (Math.random()*mcps.size());
+        randomMCP2 = (int) (Math.random()*mcps.size());
 
-        randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size()) % mcps.get(randomMCP1).getCores().size();
-        randomCoreB = (int) (Math.random()*mcps.get(randomMCP2).getCores().size()) % mcps.get(randomMCP2).getCores().size();
+        randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size());
+        randomCoreB = (int) (Math.random()*mcps.get(randomMCP2).getCores().size());
         while (randomCoreA == randomCoreB) // so we don't exchange the same task with itself
         {
-            randomCoreA = (int) Math.random() % mcps.get(randomMCP1).getCores().size(); // select another task
+            randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size()); // select another task
         }
         Core coreA = mcps.get(randomMCP1).getCore(randomCoreA);
         Core coreB = mcps.get(randomMCP2).getCore(randomCoreB);
@@ -133,16 +112,17 @@ public class Algorithms {
     }
 
     // simulated annealing
-    static void simulatedAnnealing(float T0, int TIMEINIT, int MAXTIME, int BETA, int ALPHA) {
+    //this algorithm is heavily inspired by peportier's git repository as he was one of the teammate's former teacher
+    void simulatedAnnealing(double T0, double BETA0, int MAXTIME, double BETA, double ALPHA) {
 
         boolean solutionFound = false; // the solution has not been found yet
         int currentCost = cost(); // the current cost is the one of the initial state
         int bestCost = currentCost; // the best cost is the current cost
-        float temperature = T0; // the current temperature is the minimum temperature, the one entered T0
+        double temperature = T0; // the current temperature is the minimum temperature, the one entered T0
         int elapsed = 0; // the time elapsed is at 0
 
         // spent is the amount of time allowed to be spent at current temperature
-        int spent = (int) Math.floor(TIMEINIT * MAXTIME); // TIMEINIT<1, we spend a fraction of the maximum time for our
+        int spent = (int) Math.floor(BETA0 * MAXTIME); // BETA0<1, we spend a fraction of the maximum time for our
                                                           // entire simulation at the begining
         // (because we're at high temperature)
         int timer = spent; // our timer
@@ -157,6 +137,7 @@ public class Algorithms {
                                         // solution we can stop
                     bestCost = currentCost; // the best cost is 0
                     solutionFound = true; // the solution is found
+                    System.out.println("Solution found");
                     break; // we stop
                 } else if (currentCost < bestCost) {
                     bestCost = currentCost; // we have found a solution for which the cost is lowest to this point so we
@@ -175,7 +156,32 @@ public class Algorithms {
 
     }
 
-    static void initialAssignation(ArrayList<Task> tasks)
+    // print configuration
+    void printConfig()
+    {
+        Core currentCore;
+        List<Task> currentTaskList;
+        System.out.println("-----------------------");
+        for (int i=0; i<mcps.size(); i++)
+        {
+            System.out.println("MCP n°"+i);
+            for(int j=0; j<mcps.get(i).getCores().size(); j++)
+            {
+                System.out.print("Core n°"+j+" : ");
+                currentCore = mcps.get(i).getCores().get(j);
+                currentTaskList = currentCore.getTasks();
+                for (int k=0; k<currentTaskList.size(); k++)
+                {
+                    System.out.print(currentTaskList.get(k).getId()+" ");
+                }
+                System.out.println("");
+            }
+            System.out.println("");
+        }
+    }
+
+
+    void initialAssignation(List<Task> tasks)
     {
         // sort the tasks by priority
         Comparator<Task> byPriority = Comparator.comparing(Task::getPriority);
@@ -185,26 +191,36 @@ public class Algorithms {
         int coreId;
         for (int i=0; i<tasks.size(); i++) {
             // pick a randomMCP
-            randomMCP = (int) (Math.random()*mcps.size())/mcps.size(); 
+            randomMCP = (int) (Math.random()*mcps.size());
             //pick a random core from that MCP
-            randomCore = (int) (Math.random()*mcps.get(randomMCP).getCores().size())/mcps.get(randomMCP).getCores().size();
+            randomCore = (int) (Math.random()*mcps.get(randomMCP).getCores().size());
             //assign the task to the core
-            mcps.getCores().(randomCore).addTask(tasks.get(i));
+            mcps.get(randomMCP).getCores().get(randomCore).addTask(tasks.get(i));
         }
 
     }
 
     public static void main(String[] args)
     {
+        Algorithms algo = new Algorithms();
         //call createTasksFromXml to read the tasks
-        String path = "small.xml";
-        ArrayList<Task> tasks = Parser.createTasksFromXml(path);
+        String path = "medium.xml";
+        List<Task> tasks = Parser.createTasksFromXml(path);
         // call createMCPsFromXml to read the MCPs
-        mcps = Parser.createMCPsFromXml(path);
+        algo.mcps = Parser.createMCPsFromXml(path);
         // assign the tasks to the MCPs
-        initialAssignation(tasks);
-        printConfig();
+        algo.initialAssignation(tasks);
+        System.out.println("Initial configuration :");
+        algo.printConfig();
         // start simulated annealing
-       // simulatedAnnealing(float T0, int TIMEINIT, int MAXTIME, int BETA, int ALPHA)
+        System.out.println("Start of simulated annealing:");
+
+        double T0=25;
+        double ALPHA=0.93;
+        double BETA=1.05;
+        double BETA0=0.001;
+        int MAXTIME=100000000;
+        algo.simulatedAnnealing(T0, BETA0, MAXTIME, BETA, ALPHA);
+        algo.printConfig();
     }
 }
