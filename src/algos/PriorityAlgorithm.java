@@ -2,8 +2,8 @@ package algos;
 
 import java.util.List;
 
-import mcp.Task;
-import mcp.Task;
+import MCP.Task;
+import MCP.Task;
 import java.util.Collections;
 public class PriorityAlgorithm {
     List<Task> tasks;

@@ -21,7 +21,8 @@ private Integer priority;
     	this.id = id;
     	this.WCET = WCET;
     	this.deadline = d;
-    	this.period = p;
+        this.period = p;
+        this.priority = 1/period; // added priority calculation here (shortest period -> higher priority)
     }
     
     public Long getDeadline() {
