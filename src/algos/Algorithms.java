@@ -1,9 +1,10 @@
+
 import mcp.ConcreteTask;
 import mcp.Task;
 import mcp.Core;
 
 public class Algorithms {
-
+	private List<MCP> mcps;
 	//calculation of cost
 	int cost() // ---------not implemented yet
 	{
@@ -23,33 +24,86 @@ public class Algorithms {
 	// print configuration
 	void printConfig()// ----------not implemented yet
 	{
+		// for each core print each 
 	}
 
 	//
 
 	// exchange tasks between two cores
-	void exchange(Core coreA, Core coreB) // -------- not implemented yet
+	Task[] exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
 	{
+		Task[] exchangedTasks = new Task[2]
 		Task taskA = coreA.getRandomTask();
 		Task taskB = coreB.swapRandomTask(taskA);
 		coreA.addTask(taskB);
-		// sort the cores
+		coreA.sortTasks();
+		coreB.sortTasks();
+		
+		exchangedTasks[0]=taskA;
+		exchangedTasks[1]=taskB;
+		
+		return exchangedTasks;	
+	}
+	
+	void undoExchange(Task[] tasks, Core coreA, Core coreB)
+	{
+		
+		coreA.getTaskById(tasks[1].getId());
+		coreB.getTaskById(tasks[0].getId());
+		coreA.addTask(tasks[0]);
+		coreB.addTask(tasks[1]);
+		
+		coreA.sortTasks();
+		coreB.sortTasks();
 		
 	}
+	
+	
+	
+// not here	
+	public boolean getTaskById(Task task)
+	{
+		int index = 0;
+		for(Task aTask : tasks)
+		{
+			if(aTask.getId()==task.getId())
+			{
+				break;
+			}
+			index++;
+		}
+		
+		getTaskByIndex(index);
+		
+	}
+	
+	
+	
 
 	//step and simulatedAnnealing are heavily inspired by peportier's algorithms on his git repository as he was my teacher last year.
 
 	//step selects a neighbor configuration (a configuration where we have exchanged 2 tasks) and decides if the algorithm chooses them or not
-	int step(int currentCost, float temperature, int nbCores)
+	int step(int currentCost, float temperature)
 	{
-		int newCost, costDifference, randomCoreA, randomCoreB;
-		randomCoreA = (int) Math.random()%nbCores;
-		randomCoreB = (int) Math.random()%nbCores; 
+		int newCost, costDifference, randomCoreA, randomCoreB, randomMCP1, randomMCP2;
+		
+		randomMCP1 = (int) Math.random()%mcps.size();
+		randomMCP2 = (int) Math.random()%mcps.size();
+		
+		randomCoreA = (int) Math.random()%mcps.get(randomMCP1).getCores().size();
+		randomCoreB = (int) Math.random()%mcps.get(randomMCP2).getCores().size(); 
+		Task[] switchedTasks = new Task[2];
 		while (randomCoreA == randomCoreB) // so we don't exchange the same task with itself
 		{
-			randomCoreA = (int) Math.random()%nbCores; //select another task
+			randomCoreA = (int) Math.random()%mcps.get(randomMCP1).getCores().size(); //select another task
 		}
+		
+		
+		
 		//exchange(randomCoreA, randomCoreB); // we exchange the two tasks
+		
+		switchedTasks = exchangeRandomTasks(randomCoreA, randomCoreB);
+		
 		newCost = cost(); // we calculate the cost of the new configuration
 		int costDiff = newCost - currentCost; // the difference between the costs
 		if(costDiff < 0) // the new cost is lower than the current one, they we definitely make the move
@@ -61,7 +115,7 @@ public class Algorithms {
 			{
 				currentCost = newCost;
 			} else { // if our random number is bigger than the temperature, we don't accept this new configuration, and we undo the change
-				//exchange(randomTaskA, randomTaskB); //undoing the exchange is basically redoing it (re-exchanging them)
+				undoExchange(switchedTasks, randomCoreA, randomCoreB); //undoing the exchange is basically redoing it (re-exchanging them)
 			}
 				
 		}
@@ -70,7 +124,7 @@ public class Algorithms {
 	}
 
 	//simulated annealing
-	void simulatedAnnealing(float T0, int TIMEINIT, int MAXTIME, int nbCores, int BETA, int ALPHA) {
+	void simulatedAnnealing(float T0, int TIMEINIT, int MAXTIME, int BETA, int ALPHA) {
 		
 		boolean solutionFound= false;  // the solution has not been found yet
 		int currentCost = cost(); // the current cost is the one of the initial state
@@ -108,4 +162,18 @@ public class Algorithms {
 		}
 
 	}
+	
+	public static void main(String[] args)
+	{
+		// call createTasksFromXml from parser to get the list of tasks
+		// call the method that will compute the priorities
+		// call createMCPsFromXml from parser to create the different MCP 
+		// assign tasks to cores : pick a random mcp and pick a random core from that mcp and put the task there
+		// sort the tasks for each core
+		// start simulated annealing
+		
+		simulatedAnnealing(float T0, int TIMEINIT, int MAXTIME, int nbCores, int BETA, int ALPHA)
+	}
+	
 }
+
