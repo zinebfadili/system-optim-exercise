@@ -1,6 +1,8 @@
 package algos;
 
 import java.util.List;
+
+import mcp.Task;
 import mcp.Task;
 import java.util.Collections;
 public class PriorityAlgorithm {
@@ -11,8 +13,8 @@ public class PriorityAlgorithm {
     {
         Collections.sort(tasks);
         int i=1;
-        for (Task concreteTask : tasks) {
-            concreteTask.setPriority(i);
+        for (Task Task : tasks) {
+            Task.setPriority(i);
             i++;
         }
         return tasks;

@@ -2,15 +2,17 @@ package mcp;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 
 public class Core {
 	
 	private int id;
+	private boolean sorted = false;
 	private double WCETFactor;
 	private List<Task> tasks;
 	
-	protected void sortTasks()
+	public void sortTasks()
 	{
 		Comparator<Task> byPriority = Comparator.comparing(Task::getPriority);
 		tasks.sort(byPriority);
@@ -40,11 +42,19 @@ public class Core {
 	}
 	
 	public boolean addTask(Task t) {
-		return tasks.add(t);
+		sorted = false;
+		return tasks.add((Task) t);
 	}
 	
 	public boolean addTaskList(List<Task> tasks) {
-		return this.tasks.addAll(tasks);
+		sorted = false;
+		boolean added = this.tasks.addAll(tasks);
+		if(added)
+		{
+			sortTasks();
+			sorted = true;
+		}
+		return added;
 	}
 	
 	public Task getTaskByIndex(int idx) {
@@ -57,9 +67,58 @@ public class Core {
 	}
 
 	public Task swapRandomTask(Task t1) {
+		sorted = false;
 		int i =  (int)Math.random() * tasks.size();
 		Task t2 = getTaskByIndex(i);
 		tasks.add(i, t1);
 		return t2;
+	}
+	
+	public int getUnschedulable() {
+		if(!sorted) {
+			Collections.sort(tasks);
+			sorted = true;
+		}
+		int unschedulable = 0;
+		double responseTime = 0;
+		for(int i = 0; i < tasks.size(); i++) {
+			responseTime = getWCRT(i);
+			if(responseTime > tasks.get(i).getDeadline())
+				unschedulable++;
+		}
+		
+		return unschedulable;
+	}
+	// not here	
+	public void removeTaskById(int id)
+	{
+		int index = 0;
+		for(Task aTask : tasks)
+		{
+			if(aTask.getId()==id)
+			{
+				break;
+			}
+			index++;
+		}
+		getTaskByIndex(index);
+	}
+	public int getWCRT(int i) {
+		
+		double ci = Math.ceil(tasks.get(i).getWCET()*WCETFactor);
+		double interference, intSum, responseTime;
+		interference = 0;
+		do {
+			intSum = 0;
+			responseTime = interference + ci;
+			for(int j = 0; j < i; j++) {
+				intSum += Math.ceil(responseTime/tasks.get(j).getPeriod()) 
+						* (tasks.get(j).getWCET()* WCETFactor);
+			}
+			interference = intSum;
+		}while(interference + ci > responseTime);
+		
+		return (int) Math.ceil(responseTime);
+		
 	}
 }

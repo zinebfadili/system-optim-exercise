@@ -37,4 +37,9 @@ public class MCP {
 			.findFirst()
 			.orElse(null);
 	}
+
+	@Override
+	public String toString(){
+		return id + " " + this.cores.toString();
+	}
 }

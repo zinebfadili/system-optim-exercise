@@ -1,7 +1,7 @@
 package mcp;
 
 
-public class Task implements ITask,Comparable<Task>{
+public class Task implements Comparable<Task>{
 
 private Long deadline;
 private Long period;
@@ -16,7 +16,14 @@ private Integer priority;
         return c1;
         return this.getId().compareTo(t.getId());
     }
-
+    
+    public Task(Integer id, Integer WCET, Long d, Long p) {
+    	this.id = id;
+    	this.WCET = WCET;
+    	this.deadline = d;
+    	this.period = p;
+    }
+    
     public Long getDeadline() {
         return deadline;
     }
@@ -54,6 +61,14 @@ private Integer priority;
     }
 
     public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public Task(Integer id, Integer wCET, Long deadline, Long period, Integer priority) {
+        this.deadline = deadline;
+        this.period = period;
+        this.id = id;
+        WCET = wCET;
         this.priority = priority;
     }
 
