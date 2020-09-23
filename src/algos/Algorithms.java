@@ -35,7 +35,7 @@ public class Algorithms {
          * the result of each call cost = Ntotal;
          */
         System.out.println("number of unschedulable : "+ unschedulable);
-        return unschedulable / totalTasks;
+        return unschedulable;
     }
 
     // exchange tasks between two cores
