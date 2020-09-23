@@ -10,20 +10,20 @@ public class Core {
 	private int id;
 	private boolean sorted = false;
 	private double WCETFactor;
-	private List<ConcreteTask> tasks;
+	private List<Task> tasks;
 	
-	protected void sortTasks()
+	public void sortTasks()
 	{
-		Comparator<ConcreteTask> byPriority = Comparator.comparing(ConcreteTask::getPriority);
+		Comparator<Task> byPriority = Comparator.comparing(Task::getPriority);
 		tasks.sort(byPriority);
 	}
 	public Core(int id, double WCETFactor){
 		this.id = id;
 		this.WCETFactor = WCETFactor;
-		this.tasks = new ArrayList<ConcreteTask>();
+		this.tasks = new ArrayList<Task>();
 	}
 	
-	public Core(int id, double WCETFactor, List<ConcreteTask> tasks){
+	public Core(int id, double WCETFactor, List<Task> tasks){
 		this.id = id;
 		this.WCETFactor = WCETFactor;
 		this.tasks = tasks;
@@ -37,18 +37,24 @@ public class Core {
 		return id;
 	}
 	
-	public List<ConcreteTask> getTasks(){
+	public List<Task> getTasks(){
 		return tasks;
 	}
 	
 	public boolean addTask(Task t) {
 		sorted = false;
-		return tasks.add((ConcreteTask) t);
+		return tasks.add((Task) t);
 	}
 	
-	public boolean addTaskList(List<ConcreteTask> tasks) {
+	public boolean addTaskList(List<Task> tasks) {
 		sorted = false;
-		return this.tasks.addAll(tasks);
+		boolean added = this.tasks.addAll(tasks);
+		if(added)
+		{
+			sortTasks();
+			sorted = true;
+		}
+		return added;
 	}
 	
 	public Task getTaskByIndex(int idx) {
@@ -60,7 +66,7 @@ public class Core {
 		return getTaskByIndex(i);
 	}
 
-	public Task swapRandomTask(ConcreteTask t1) {
+	public Task swapRandomTask(Task t1) {
 		sorted = false;
 		int i =  (int)Math.random() * tasks.size();
 		Task t2 = getTaskByIndex(i);
@@ -83,7 +89,20 @@ public class Core {
 		
 		return unschedulable;
 	}
-	
+	// not here	
+	public void removeTaskById(int id)
+	{
+		int index = 0;
+		for(Task aTask : tasks)
+		{
+			if(aTask.getId()==id)
+			{
+				break;
+			}
+			index++;
+		}
+		getTaskByIndex(index);
+	}
 	public int getWCRT(int i) {
 		
 		double ci = Math.ceil(tasks.get(i).getWCET()*WCETFactor);
