@@ -105,6 +105,7 @@ public class Core {
 	}
 	public int getWCRT(int i) {
 		
+		long deadline = tasks.get(i).getDeadline();
 		double ci = Math.ceil(tasks.get(i).getWCET()*WCETFactor);
 		double interference, intSum, responseTime;
 		interference = 0;
@@ -116,7 +117,7 @@ public class Core {
 						* (tasks.get(j).getWCET()* WCETFactor);
 			}
 			interference = intSum;
-		}while(interference + ci > responseTime);
+		}while(interference + ci > responseTime && responseTime < deadline);
 		
 		return (int) Math.ceil(responseTime);
 		

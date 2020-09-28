@@ -16,12 +16,33 @@ public class Algorithms {
     int cost() // ---------not implemented yet
     {
         int totalTasks = 0;
+        long totalLaxity = 0;
+        int penalty = -5000;
+        double averageLaxity = 0;
         int unschedulable = 0;
         for(MCP mcp : mcps)
         for (Core core : mcp.getCores()) {
             unschedulable += core.getUnschedulable();
             totalTasks += core.getTasks().size();
+            totalLaxity += core.getLaxity();
         }
+        // verify this ...
+        penalty *= unschedulable;
+        averageLaxity = 1/Double.valueOf(totalTasks) * totalLaxity + penalty;
+        
+        //System.out.println("number of unschedulable : "+ unschedulable);
+        //System.out.println("average laxitiy: "+ averageLaxity);
+        //Cost function will return a value between 0 and 1000
+        //A bad solution will return 1000
+        //the better a solution is, the closer the value is to 0
+        
+        if(averageLaxity < 1000) {
+        	return 1000; //maximum value;
+        }
+        else {
+        	return (int) ((1000/averageLaxity)*1000);
+        }
+        
         // here we have to implement an algorithm that calculates the global cost of all
         // the processors together, so that we can have a cost of a configuration
         // meaning the global cost.
@@ -34,8 +55,6 @@ public class Algorithms {
          * that is going to update the WRCT of each task for each core and do Ntotal +=
          * the result of each call cost = Ntotal;
          */
-        System.out.println("number of unschedulable : "+ unschedulable);
-        return unschedulable;
     }
 
     // exchange tasks between two cores
@@ -127,9 +146,11 @@ public class Algorithms {
         // (because we're at high temperature)
         int timer = spent; // our timer
 
+        
         while (elapsed < MAXTIME && !solutionFound) // while we haven't spent the whole time we allow ourselves
                                                     // (MAXTIME), and the solution hasn't been found
         {
+        	System.out.format("%d, out of %d spent \n", elapsed, MAXTIME);
             bestCost = currentCost; // the best cost is the current cost
             while (timer != 0) { // we still have time at this temperature
                 currentCost = step(currentCost, temperature); // we calculate the currentcost
