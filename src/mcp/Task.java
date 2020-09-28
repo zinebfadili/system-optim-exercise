@@ -64,7 +64,7 @@ private Integer priority;
         this.priority = priority;
     }
 
-    public Task(Long deadline, Long period, Integer id, Integer wCET, Integer priority) {
+    public Task(Integer id, Integer wCET, Long deadline, Long period, Integer priority) {
         this.deadline = deadline;
         this.period = period;
         this.id = id;

@@ -48,7 +48,13 @@ public class Core {
 	
 	public boolean addTaskList(List<Task> tasks) {
 		sorted = false;
-		return this.tasks.addAll(tasks);
+		boolean added = this.tasks.addAll(tasks);
+		if(added)
+		{
+			sortTasks();
+			sorted = true;
+		}
+		return added;
 	}
 	
 	public Task getTaskByIndex(int idx) {
@@ -83,7 +89,20 @@ public class Core {
 		
 		return unschedulable;
 	}
-	
+	// not here	
+	public void removeTaskById(int id)
+	{
+		int index = 0;
+		for(Task aTask : tasks)
+		{
+			if(aTask.getId()==id)
+			{
+				break;
+			}
+			index++;
+		}
+		getTaskByIndex(index);
+	}
 	public int getWCRT(int i) {
 		
 		double ci = Math.ceil(tasks.get(i).getWCET()*WCETFactor);
