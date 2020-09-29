@@ -58,11 +58,14 @@ public class Core {
 	}
 	
 	public Task getTaskByIndex(int idx) {
+		//System.out.println("index of task to be deleted"+ idx);
 		return tasks.remove(idx);
 	}
 	
 	public Task getRandomTask() {
-		int i =  (int)Math.random() * tasks.size();
+		//System.out.println("size of tasks" + tasks.size());
+		int i =  (int) (Math.random() * tasks.size());
+		//System.out.println("index in getRandomTask function" + i);
 		return getTaskByIndex(i);
 	}
 

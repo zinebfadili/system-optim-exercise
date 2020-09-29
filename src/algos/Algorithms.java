@@ -10,39 +10,53 @@ import java.util.List;
 
 import java.util.Collections;
 public class Algorithms {
-    private List<MCP> mcps;
+    public List<MCP> mcps;
+    private int perfectLaxity = 0;
 
+    void perfectLaxity() {
+        for (MCP mcp : mcps) {
+            for (Core core : mcp.getCores()) {
+                for (Task task : core.getTasks()) {
+                    perfectLaxity += task.getDeadline() - task.getWCET();
+                }
+            }
+        }
+    }
     //// calculation of cost
-    int cost() // ---------not implemented yet
+    double cost() // ---------not implemented yet
     {
         int totalTasks = 0;
         long totalLaxity = 0;
-        int penalty = -5000;
-        double averageLaxity = 0;
+        int penalty = 5000;
+        //double averageLaxity = 0;
         int unschedulable = 0;
-        for(MCP mcp : mcps)
-        for (Core core : mcp.getCores()) {
-            unschedulable += core.getUnschedulable();
-            totalTasks += core.getTasks().size();
-            totalLaxity += core.getLaxity();
+
+        for(MCP mcp : mcps) {
+            for (Core core : mcp.getCores()) {
+                unschedulable += core.getUnschedulable();
+                totalTasks += core.getTasks().size();
+                totalLaxity += core.getLaxity();
+            }
         }
         // verify this ...
         penalty *= unschedulable;
-        averageLaxity = 1/Double.valueOf(totalTasks) * totalLaxity + penalty;
-        
+        //averageLaxity = 1/Double.valueOf(totalTasks) * totalLaxity + penalty;
+
+        //averageLaxity = ((double)totalLaxity)/perfectLaxity;
         //System.out.println("number of unschedulable : "+ unschedulable);
         //System.out.println("average laxitiy: "+ averageLaxity);
         //Cost function will return a value between 0 and 1000
         //A bad solution will return 1000
         //the better a solution is, the closer the value is to 0
-        
-        if(averageLaxity < 1000) {
+
+        //System.out.println("average laxity "+ averageLaxity);
+        /*if(averageLaxity < 1000) {
         	return 1000; //maximum value;
         }
         else {
         	return (int) ((1000/averageLaxity)*1000);
-        }
-        
+        }*/
+        return (1.0/totalTasks * (perfectLaxity-(totalLaxity-penalty)));
         // here we have to implement an algorithm that calculates the global cost of all
         // the processors together, so that we can have a cost of a configuration
         // meaning the global cost.
@@ -58,7 +72,7 @@ public class Algorithms {
     }
 
     // exchange tasks between two cores
-    Task[] exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
+    /*Task[] exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
 	{
 		Task[] exchangedTasks = new Task[2];
 		Task taskA = coreA.getRandomTask();
@@ -70,10 +84,29 @@ public class Algorithms {
 		exchangedTasks[0]=taskA;
 		exchangedTasks[1]=taskB;
 		
-		return exchangedTasks;	
-	}
+		return exchangedTasks;
+	}*/
 
-    void undoExchange(Task[] tasks, Core coreA, Core coreB) {
+    //version 2 : just move a task to another :
+    Task exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
+    {
+        //Task[] exchangedTasks = new Task[2];
+        Task taskA = coreA.getRandomTask();
+        //Task taskB = coreB.swapRandomTask(taskA);
+        //coreA.addTask(taskB);
+        coreB.addTask(taskA);
+        coreA.sortTasks();
+        coreB.sortTasks();
+
+        //exchangedTasks[0]=taskA;
+        //exchangedTasks[1]=taskB;
+
+        //return exchangedTasks;
+        return taskA;
+    }
+
+
+    /*void undoExchange(Task[] tasks, Core coreA, Core coreB) {
 
         coreA.removeTaskById(tasks[1].getId());
         coreB.removeTaskById(tasks[0].getId());
@@ -83,8 +116,59 @@ public class Algorithms {
         coreA.sortTasks();
         coreB.sortTasks();
 
+    }*/
+
+    //version 2: just re-adding the task to the core
+    void undoExchange(Task task, Core coreA, Core coreB) {
+
+        //coreA.removeTaskById(tasks[1].getId());
+        coreB.removeTaskById(task.getId());
+        coreA.addTask(task);
+       // coreB.addTask(tasks[1]);
+
+        coreA.sortTasks();
+        coreB.sortTasks();
+
     }
 
+    //take an mcp and return the core that has the lowest utilization rate
+    Core lessUtil(int mcp)
+    {
+        double minUtil = 100;
+        double util = 0;
+        Core chosenCore = mcps.get(mcp).getCore(0);
+        for(Core core : mcps.get(mcp).getCores()) {
+            for (Task task : core.getTasks()) {
+                util += (task.getWCET() * core.getWCETFactor()) / task.getPeriod();
+            }
+            if(util < minUtil){
+                minUtil = util;
+                chosenCore = core;
+            }
+            util = 0;
+        }
+
+        return chosenCore;
+    }
+
+    Core mostUtil(int mcp)
+    {
+        double maxUtil = 0;
+        double util = 0;
+        Core chosenCore = mcps.get(mcp).getCore(0);
+        for(Core core : mcps.get(mcp).getCores()) {
+            for (Task task : core.getTasks()) {
+                util += (task.getWCET() * core.getWCETFactor()) / task.getPeriod();
+            }
+            if(util > maxUtil){
+                maxUtil = util;
+                chosenCore = core;
+            }
+            util = 0;
+        }
+
+        return chosenCore;
+    }
     //
 
     // step and simulatedAnnealing are heavily inspired by peportier's algorithms on
@@ -93,23 +177,47 @@ public class Algorithms {
     // step selects a neighbor configuration (a configuration where we have
     // exchanged 2 tasks) and decides if the algorithm chooses them or not
     //this algorithm is heavily inspired by peportier's git repository as he was one of the teammate's former teacher
-    int step(int currentCost, double temperature) {
-        Task[] switchedTasks = new Task[2];
-        int newCost, costDifference, randomCoreA, randomCoreB, randomMCP1, randomMCP2;
-        randomMCP1 = (int) (Math.random()*mcps.size());
-        randomMCP2 = (int) (Math.random()*mcps.size());
+    double step(double currentCost, double temperature) {
+        //Task[] switchedTasks = new Task[2];
+        Task switchedTask;
+        int randomCoreA, randomCoreB, randomMCP1, randomMCP2;
+        double newCost, costDifference;
+        randomMCP1 = (int) (Math.random()*mcps.size()); //pick a random MCP
+        randomMCP2 = (int) (Math.random()*mcps.size()); //pick a random MCP
 
-        randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size());
-        randomCoreB = (int) (Math.random()*mcps.get(randomMCP2).getCores().size());
-        while (randomCoreA == randomCoreB) // so we don't exchange the same task with itself
+        //System.out.println("MCP1 : "+randomMCP1);
+        //System.out.println("MCP2 : "+randomMCP2);
+
+        //version 2
+        randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size()); //pick a random core
+        randomCoreB = (int) (Math.random()*mcps.get(randomMCP2).getCores().size()); //pick a random core
+
+       /* Core coreA = mostUtil(randomMCP1);
+        Core coreB = lessUtil(randomMCP2);*/
+
+       // System.out.println("C1 : "+randomCoreA);
+       // System.out.println("C2 : "+randomCoreB);
+        /*while ((randomMCP1==randomMCP2 && coreA.getId() == coreB.getId())
+                || (coreA.getTasks().size() == 0)) // so we don't exchange the same task with itself*/
+        while ((randomMCP1==randomMCP2 && randomCoreA  == randomCoreB)
+                || (mcps.get(randomMCP1).getCore(randomCoreA).getTasks().size() == 0))
         {
-            randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size()); // select another task
+            //System.out.println("stuck");
+            //printConfig();
+           /* System.out.println("MCP1 :" +randomMCP1);
+            System.out.println("MCP2 :" +randomMCP2);
+            System.out.println("CoreA :" +randomCoreA);
+            System.out.println("CoreB :" +randomCoreB);*/
+            randomMCP1 = (int) (Math.random()*mcps.size()); //pick a random MCP
+            randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size()); // select another core
+            //coreA = mostUtil(randomMCP1);
         }
         Core coreA = mcps.get(randomMCP1).getCore(randomCoreA);
         Core coreB = mcps.get(randomMCP2).getCore(randomCoreB);
-        switchedTasks = exchangeRandomTasks(coreA, coreB); // we exchange the two tasks
+        switchedTask = exchangeRandomTasks(coreA, coreB); // we exchange the two tasks
+       // switchedTask = exchangeRandomTasks(coreA, coreB);
         newCost = cost(); // we calculate the cost of the new configuration
-        int costDiff = newCost - currentCost; // the difference between the costs
+        double costDiff = newCost - currentCost; // the difference between the costs
         if (costDiff < 0) // the new cost is lower than the current one, they we definitely make the move
         {
             currentCost = newCost;
@@ -122,7 +230,7 @@ public class Algorithms {
                 currentCost = newCost;
             } else { // if our random number is bigger than the temperature, we don't accept this new
                      // configuration, and we undo the change
-                undoExchange(switchedTasks,coreA, coreB); // undoing the exchange is basically redoing it (re-exchanging them)
+                undoExchange(switchedTask,coreA, coreB); // undoing the exchange is basically redoing it (re-exchanging them)
             }
 
         }
@@ -135,8 +243,8 @@ public class Algorithms {
     void simulatedAnnealing(double T0, double BETA0, int MAXTIME, double BETA, double ALPHA) {
 
         boolean solutionFound = false; // the solution has not been found yet
-        int currentCost = cost(); // the current cost is the one of the initial state
-        int bestCost = currentCost; // the best cost is the current cost
+        double currentCost = cost(); // the current cost is the one of the initial state
+        double bestCost = currentCost; // the best cost is the current cost
         double temperature = T0; // the current temperature is the minimum temperature, the one entered T0
         int elapsed = 0; // the time elapsed is at 0
 
@@ -154,11 +262,20 @@ public class Algorithms {
             bestCost = currentCost; // the best cost is the current cost
             while (timer != 0) { // we still have time at this temperature
                 currentCost = step(currentCost, temperature); // we calculate the currentcost
+                //System.out.println("current cost : "+ currentCost);
                 if (currentCost == 0) { // if the cost calculated is equal to zero, it means that we have found the best
                                         // solution we can stop
                     bestCost = currentCost; // the best cost is 0
                     solutionFound = true; // the solution is found
                     System.out.println("Solution found");
+                    System.out.println("best cost found"+bestCost);
+                    int totalLaxity = 0;
+                    for(MCP mcp : mcps) {
+                        for (Core core : mcp.getCores()) {
+                            totalLaxity += core.getLaxity();
+                        }
+                    }
+                    System.out.println("total laxity : "+totalLaxity);
                     break; // we stop
                 } else if (currentCost < bestCost) {
                     bestCost = currentCost; // we have found a solution for which the cost is lowest to this point so we
@@ -170,6 +287,7 @@ public class Algorithms {
                               // the possible solution
             System.out.println("At temperature T=" + temperature + ", time spent : " + spent + " out of " + MAXTIME
                     + ". Total time spent so far :" + elapsed + ". Best cost so far :" + bestCost + "\n");
+            //printConfig();
             spent = (int) Math.floor(BETA * spent); // we spend more time at a lower temperature (BETA>1)
             timer = spent;
             temperature = temperature * ALPHA; // we decrease the temperature (ALPHA<1)
@@ -219,29 +337,46 @@ public class Algorithms {
             mcps.get(randomMCP).getCores().get(randomCore).addTask(tasks.get(i));
         }
 
+
+    }
+
+    void printLaxity()
+    {
+        int totalLaxity = 0;
+        for(MCP mcp : mcps) {
+            for (Core core : mcp.getCores()) {
+                totalLaxity += core.getLaxity();
+            }
+        }
+        System.out.println("total laxity : "+totalLaxity);
     }
 
     public static void main(String[] args)
     {
         Algorithms algo = new Algorithms();
         //call createTasksFromXml to read the tasks
-        String path = "medium.xml";
+        String path = "small.xml";
         List<Task> tasks = Parser.createTasksFromXml(path);
         // call createMCPsFromXml to read the MCPs
         algo.mcps = Parser.createMCPsFromXml(path);
         // assign the tasks to the MCPs
         algo.initialAssignation(tasks);
+        algo.perfectLaxity();
         System.out.println("Initial configuration :");
         algo.printConfig();
+        algo.printLaxity();
         // start simulated annealing
         System.out.println("Start of simulated annealing:");
 
         double T0=25;
-        double ALPHA=0.93;
-        double BETA=1.05;
+        double ALPHA=0.95;
+        double BETA=1.1;
         double BETA0=0.001;
         int MAXTIME=100000000;
         algo.simulatedAnnealing(T0, BETA0, MAXTIME, BETA, ALPHA);
         algo.printConfig();
+        algo.printLaxity();
+
+        System.out.println("end of algorithm");
     }
 }
