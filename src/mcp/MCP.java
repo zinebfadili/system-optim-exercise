@@ -37,6 +37,16 @@ public class MCP {
 			.findFirst()
 			.orElse(null);
 	}
+	
+	public int getLaxity() {
+		int laxity = 0;
+		for(Core core: cores) {
+			laxity += core.getLaxity();
+		}
+		
+		return laxity;
+		
+	}
 
 	@Override
 	public String toString(){

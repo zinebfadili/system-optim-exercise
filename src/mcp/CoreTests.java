@@ -16,10 +16,10 @@ public class CoreTests {
 	@Before
 	public void setUp() throws Exception {
 		tasks = new ArrayList<Task>();
-		tasks.add(new Task(1, 1, 3L, 4L, 0));
-		tasks.add(new Task(2, 1, 4L, 5L, 1));
-		tasks.add(new Task(3, 2, 5L, 6L, 2));
-		tasks.add(new Task(4, 1, 10L, 11L, 3));
+		tasks.add(new Task(1, 1, 3L, 4L));
+		tasks.add(new Task(2, 1, 4L, 5L));
+		tasks.add(new Task(3, 2, 5L, 6L));
+		tasks.add(new Task(4, 1, 10L, 11L));
 		core = new Core(1, 1.0, tasks);
 	}
 

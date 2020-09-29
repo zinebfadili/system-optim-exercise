@@ -48,7 +48,13 @@ public class Core {
 	
 	public boolean addTaskList(List<Task> tasks) {
 		sorted = false;
-		return this.tasks.addAll(tasks);
+		boolean added = this.tasks.addAll(tasks);
+		if(added)
+		{
+			sortTasks();
+			sorted = true;
+		}
+		return added;
 	}
 	
 	public Task getTaskByIndex(int idx) {
@@ -83,9 +89,23 @@ public class Core {
 		
 		return unschedulable;
 	}
-	
+	// not here	
+	public void removeTaskById(int id)
+	{
+		int index = 0;
+		for(Task aTask : tasks)
+		{
+			if(aTask.getId()==id)
+			{
+				break;
+			}
+			index++;
+		}
+		getTaskByIndex(index);
+	}
 	public int getWCRT(int i) {
 		
+		long deadline = tasks.get(i).getDeadline();
 		double ci = Math.ceil(tasks.get(i).getWCET()*WCETFactor);
 		double interference, intSum, responseTime;
 		interference = 0;
@@ -97,9 +117,19 @@ public class Core {
 						* (tasks.get(j).getWCET()* WCETFactor);
 			}
 			interference = intSum;
-		}while(interference + ci > responseTime);
+		}while(interference + ci > responseTime && responseTime < deadline);
 		
 		return (int) Math.ceil(responseTime);
 		
+	}
+	
+	public int getLaxity() {
+		int laxity = 0;
+		int startTime = 0; // is start time always 0 in our case ?
+		for(int i = 0; i < tasks.size(); i++) {
+			laxity += tasks.get(i).getDeadline() - startTime - getWCRT(i);
+		}
+		
+		return laxity;
 	}
 }
