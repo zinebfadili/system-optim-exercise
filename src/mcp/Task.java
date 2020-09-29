@@ -72,5 +72,6 @@ private Integer priority;
         WCET = wCET;
         this.priority = priority;
     }
+    
 
 }
