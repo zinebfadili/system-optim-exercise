@@ -353,30 +353,42 @@ public class Algorithms {
 
     public static void main(String[] args)
     {
-        Algorithms algo = new Algorithms();
-        //call createTasksFromXml to read the tasks
-        String path = "small.xml";
-        List<Task> tasks = Parser.createTasksFromXml(path);
-        // call createMCPsFromXml to read the MCPs
-        algo.mcps = Parser.createMCPsFromXml(path);
-        // assign the tasks to the MCPs
-        algo.initialAssignation(tasks);
-        algo.perfectLaxity();
-        System.out.println("Initial configuration :");
-        algo.printConfig();
-        algo.printLaxity();
-        // start simulated annealing
-        System.out.println("Start of simulated annealing:");
-
-        double T0=25;
-        double ALPHA=0.95;
-        double BETA=1.1;
-        double BETA0=0.001;
-        int MAXTIME=100000000;
-        algo.simulatedAnnealing(T0, BETA0, MAXTIME, BETA, ALPHA);
-        algo.printConfig();
-        algo.printLaxity();
-
-        System.out.println("end of algorithm");
+    	
+		Algorithms algo = new Algorithms();
+		//call createTasksFromXml to read the tasks
+		String path = "medium.xml";
+		List<Task> tasks = Parser.createTasksFromXml(path);
+		// call createMCPsFromXml to read the MCPs
+		algo.mcps = Parser.createMCPsFromXml(path);
+		// assign the tasks to the MCPs
+		algo.initialAssignation(tasks);
+		algo.perfectLaxity();
+		System.out.println("Initial configuration :");
+		algo.printConfig();
+		algo.printLaxity();
+		// start simulated annealing
+		System.out.println("Start of simulated annealing:");
+		
+		double T0=25;
+		double ALPHA=0.95;
+		double BETA=1.1;
+		double BETA0=0.001;
+		int MAXTIME=100000000;
+		long startTime = System.nanoTime(); 
+		algo.simulatedAnnealing(T0, BETA0, MAXTIME, BETA, ALPHA);
+		long endTime = System.nanoTime();
+		
+		algo.printConfig();
+		algo.printLaxity();
+		
+		int unschedulable = 0;
+		for(MCP mcp : algo.mcps) {
+			for(Core core : mcp.getCores()) {
+				unschedulable += core.getUnschedulable();
+			}
+		}
+		System.out.println("Simulated annealing duration: " + (endTime-startTime) + " on thread: " + Thread.currentThread().getName());
+		System.out.println("number of unchedulable tasks: " + unschedulable + " on thread: " + Thread.currentThread().getName());
+		System.out.println("end of algorithm");
     }
 }
