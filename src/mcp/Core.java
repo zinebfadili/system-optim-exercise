@@ -135,13 +135,13 @@ public class Core {
 			Collections.sort(tasks);
 			sorted = true;
 		}
-		Long before = System.nanoTime();
+		//Long before = System.nanoTime();
 		for(int i = 0; i < tasks.size(); i++) {
 			tasks.get(i).setWCRT((getWCRT(i)));
 
 		}
 
-		System.out.println("calcWCRT duration: " + (System.nanoTime() - before));
+		//System.out.println("calcWCRT duration: " + (System.nanoTime() - before));
 		validWcrt = true;
 
 	}

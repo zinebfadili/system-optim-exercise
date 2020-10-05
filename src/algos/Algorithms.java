@@ -356,7 +356,7 @@ public class Algorithms {
     	
 		Algorithms algo = new Algorithms();
 		//call createTasksFromXml to read the tasks
-		String path = "medium.xml";
+		String path = "large.xml";
 		List<Task> tasks = Parser.createTasksFromXml(path);
 		// call createMCPsFromXml to read the MCPs
 		algo.mcps = Parser.createMCPsFromXml(path);
