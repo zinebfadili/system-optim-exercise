@@ -10,6 +10,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 public class Parser {
+    /**
+     * createTasksFromXml method that allows us to create the different task objects from the provided xml file
+     * @param pathToXml path to the file that contains the environment description
+     * @return an ArrayList with the tasks of the xml document
+     */
     public static ArrayList<Task> createTasksFromXml(String pathToXml){
         // the list of tasks that are described in the xml file
         ArrayList<Task> tasks = new ArrayList<Task>();
@@ -45,6 +50,11 @@ public class Parser {
         return tasks;
     }
 
+    /**
+     * createMCPsFromXml method that allow us to create the MCP objects from the provided XML file
+     * @param pathToXml path to the xml file that contains the environment description
+     * @return an ArrayList of MCP objects representing the MCPs of the xml file
+     */
     public static ArrayList<MCP> createMCPsFromXml(String pathToXml){
         // the final array where all the mcps object will be stored
         ArrayList<MCP> mcps = new ArrayList<MCP>();
