@@ -43,11 +43,12 @@ public class XMLExport {
                 int mcpId = mcp.getId();
                 // we loop through the different cores of the mcp
                 for (Core core : mcp.getCores()){
-                    int coreId = mcp.getId();
+                    int coreId = core.getId();
                     // we finally loop over the tasks of the core
                     for(Task task : core.getTasks()){
                         int taskId = task.getId();
-                        int WCRT = core.getWCRT(taskId);
+                        //int WCRT = core.getWCRT(taskId);
+                        int WCRT = task.getWCRT();
 
                         // creating the task node
                         Element taskNode = document.createElement("Task");
