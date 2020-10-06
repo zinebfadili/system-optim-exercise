@@ -1,6 +1,7 @@
 package mcp;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -29,6 +30,10 @@ public class XMLExport {
         this.mcps.add(mcp);
     }
 
+    /**
+     * Method
+     * @param path
+     */
     public void exportTasksToXML(String path){
         try{
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -75,13 +80,20 @@ public class XMLExport {
 
                     }
                 }
-
-                TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                Transformer transformer = transformerFactory.newTransformer();
-                DOMSource domSource = new DOMSource(document);
-                StreamResult streamResult = new StreamResult(new File(path));
-                transformer.transform(domSource, streamResult);
             }
+
+            int totalLaxity = 0;
+            for(MCP m : this.mcps) totalLaxity += m.getLaxity();
+
+            Element element = document.getDocumentElement();
+            Comment comment = document.createComment("Total Laxity: " + totalLaxity);
+            document.appendChild(comment);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(path));
+            transformer.transform(domSource, streamResult);
 
         } catch(Exception e){
             e.printStackTrace();
