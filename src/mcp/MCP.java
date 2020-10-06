@@ -38,6 +38,9 @@ public class MCP {
 			.orElse(null);
 	}
 	
+	/*
+	 * Returns the sum of the total laxity of all cores
+	 * */
 	public int getLaxity() {
 		int laxity = 0;
 		for(Core core: cores) {

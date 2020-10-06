@@ -105,12 +105,12 @@ public class Core {
 
     }
 
+    
     public void calcWCRT() {
         if (!sorted) {
             Collections.sort(tasks);
             sorted = true;
         }
-        //Long before = System.nanoTime();
         for (int i = 0; i < tasks.size(); i++) {
             tasks.get(i).setWCRT((getWCRT(i)));
 
