@@ -4,6 +4,7 @@ public class Task implements Comparable<Task>{
 
 private Long deadline;
 private Long period;
+private Integer wcrt;
 private Integer id;
 private Integer WCET;
 private Integer priority;
@@ -22,6 +23,7 @@ private Integer priority;
     	this.deadline = d;
         this.period = p;
         this.priority = Math.toIntExact(1/period); // added priority calculation here (shortest period -> higher priority)
+        this.wcrt = 0;
     }
     
     public Long getDeadline() {
@@ -56,6 +58,13 @@ private Integer priority;
         WCET = wCET;
     }
 
+    public Integer getWCRT() {
+    	return this.wcrt;
+    }
+    
+    public void setWCRT(Integer wcrt) {
+    	this.wcrt =  wcrt;
+    }
     public Integer getPriority() {
         return priority;
     }
@@ -71,5 +80,6 @@ private Integer priority;
         WCET = wCET;
         this.priority = priority;
     }
+    
 
 }
