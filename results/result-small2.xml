@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Solution>
+<Task Core="0" MCP="0" WCRT="3733" id="1"/>
+<Task Core="1" MCP="0" WCRT="362" id="6"/>
+<Task Core="2" MCP="0" WCRT="780" id="8"/>
+<Task Core="3" MCP="0" WCRT="1372" id="3"/>
+<Task Core="0" MCP="1" WCRT="312" id="5"/>
+<Task Core="1" MCP="1" WCRT="126" id="0"/>
+<Task Core="2" MCP="1" WCRT="26" id="2"/>
+<Task Core="2" MCP="1" WCRT="2866" id="7"/>
+<Task Core="3" MCP="1" WCRT="212" id="4"/>
+</Solution><!--Total Laxity: 285366-->
