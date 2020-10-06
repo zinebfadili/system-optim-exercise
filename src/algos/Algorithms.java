@@ -4,6 +4,7 @@ import mcp.Core;
 import mcp.MCP;
 import mcp.Parser;
 import mcp.Task;
+import mcp.XMLExport;
 
 import java.util.Comparator;
 import java.util.List;
@@ -356,7 +357,7 @@ public class Algorithms {
     	
 		Algorithms algo = new Algorithms();
 		//call createTasksFromXml to read the tasks
-		String path = "large.xml";
+		String path = "small.xml";
 		List<Task> tasks = Parser.createTasksFromXml(path);
 		// call createMCPsFromXml to read the MCPs
 		algo.mcps = Parser.createMCPsFromXml(path);
@@ -369,15 +370,22 @@ public class Algorithms {
 		// start simulated annealing
 		System.out.println("Start of simulated annealing:");
 		
-		double T0=25;
-		double ALPHA=0.95;
+		double T0=35;
+		double ALPHA=0.90;
 		double BETA=1.1;
 		double BETA0=0.001;
-		int MAXTIME=100000000;
+		int MAXTIME=30000000;
 		long startTime = System.nanoTime(); 
 		algo.simulatedAnnealing(T0, BETA0, MAXTIME, BETA, ALPHA);
 		long endTime = System.nanoTime();
 		
+		XMLExport exporter = new XMLExport();
+		
+		for(MCP mcp : algo.mcps) {
+			exporter.addMCP(mcp);
+		}
+		
+		exporter.exportTasksToXML("/Users/rsm/Documents/system-optimization/Exercise/sysopt-exercise/small-test.xml");
 		algo.printConfig();
 		algo.printLaxity();
 		
