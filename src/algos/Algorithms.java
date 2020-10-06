@@ -243,6 +243,11 @@ public class Algorithms {
 		Algorithms algo = new Algorithms();
 		//call createTasksFromXml to read the tasks
 		String path = "small.xml";
+		String resultPath = "result.xml";
+		if(args.length>=2) {
+			path=args[0];
+			resultPath=args[1];
+		}
 		List<Task> tasks = Parser.createTasksFromXml(path);
 		// call createMCPsFromXml to read the MCPs
 		algo.mcps = Parser.createMCPsFromXml(path);
@@ -270,7 +275,7 @@ public class Algorithms {
 			exporter.addMCP(mcp);
 		}
 		
-		exporter.exportTasksToXML("./small-test.xml");
+		exporter.exportTasksToXML(resultPath);
 		algo.printConfig();
 		algo.printLaxity();
 		
