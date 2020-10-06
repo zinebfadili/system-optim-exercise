@@ -105,7 +105,11 @@ public class Core {
 
     }
 
-    
+    /*
+     * calcWCRT calculates the Worst case reaction time for each task
+     * and saves it in the task.
+     * This will be called everytime the list of task changes.
+     * */
     public void calcWCRT() {
         if (!sorted) {
             Collections.sort(tasks);
@@ -132,6 +136,12 @@ public class Core {
         getTaskByIndex(index);
     }
 
+    /*
+     * getWCRT calculates the worst case reaction time of a task with the 
+     * specified index.
+     * The method used is discussed in Section 4.4.2 in the 
+     * "Hard Real-Time--Periodic scheduling" chapter.
+     * */
     public int getWCRT(int i) {
 
         long deadline = tasks.get(i).getDeadline();
@@ -153,15 +163,14 @@ public class Core {
 
     }
 
-
+    /*
+     * calculates the laxity of the core
+     * */
     public int getLaxity() {
         if (!validWcrt) {
             calcWCRT();
         }
         int laxity = 0;
-		/*for(Task task : tasks) {
-			laxity += task.getDeadline() - task.getWCRT();
-		}*/
         Task task;
         for (int i = 0; i < tasks.size(); i++) {
             task = tasks.get(i);

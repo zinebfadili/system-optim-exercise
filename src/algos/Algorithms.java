@@ -14,6 +14,10 @@ public class Algorithms {
     public List<MCP> mcps;
     private int perfectLaxity = 0;
 
+    /*
+     * perfect laxity, is the laxity where there is no interference of other tasks.
+     * perfectLaxity is used in the cost function. 
+     * */
     void perfectLaxity() {
         for (MCP mcp : mcps) {
             for (Core core : mcp.getCores()) {
@@ -23,13 +27,21 @@ public class Algorithms {
             }
         }
     }
+    
     //// calculation of cost
+    /*
+     * The cost function calculates the cost of the current configuration
+     * It measures how far the current scheduled laxity is from the perfect laxity
+     * If some tasks are unschedulable a penalty is added to the cost
+     * The penalty is proportional to the number of unschedulable tasks.
+     * 
+     * The lower the cost the better the current configuration is.
+     * */
     double cost() //
     {
         int totalTasks = 0;
         long totalLaxity = 0;
         int penalty = 5000;
-        //double averageLaxity = 0;
         int unschedulable = 0;
 
         for(MCP mcp : mcps) {
@@ -49,7 +61,7 @@ public class Algorithms {
 
 
     // just move a task to another :
-    Task exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
+    Task exchangeRandomTasks(Core coreA, Core coreB)
     {
         Task taskA = coreA.getRandomTask();
 
@@ -66,10 +78,8 @@ public class Algorithms {
     // just re-adding the task to the core
     void undoExchange(Task task, Core coreA, Core coreB) {
 
-        //coreA.removeTaskById(tasks[1].getId());
         coreB.removeTaskById(task.getId());
         coreA.addTask(task);
-       // coreB.addTask(tasks[1]);
 
         coreA.sortTasks();
         coreB.sortTasks();
