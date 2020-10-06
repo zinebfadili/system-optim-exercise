@@ -24,7 +24,7 @@ public class Algorithms {
         }
     }
     //// calculation of cost
-    double cost() // ---------not implemented yet
+    double cost() //
     {
         int totalTasks = 0;
         long totalLaxity = 0;
@@ -39,87 +39,31 @@ public class Algorithms {
                 totalLaxity += core.getLaxity();
             }
         }
-        // verify this ...
+
         penalty *= unschedulable;
-        //averageLaxity = 1/Double.valueOf(totalTasks) * totalLaxity + penalty;
 
-        //averageLaxity = ((double)totalLaxity)/perfectLaxity;
-        //System.out.println("number of unschedulable : "+ unschedulable);
-        //System.out.println("average laxitiy: "+ averageLaxity);
-        //Cost function will return a value between 0 and 1000
-        //A bad solution will return 1000
-        //the better a solution is, the closer the value is to 0
-
-        //System.out.println("average laxity "+ averageLaxity);
-        /*if(averageLaxity < 1000) {
-        	return 1000; //maximum value;
-        }
-        else {
-        	return (int) ((1000/averageLaxity)*1000);
-        }*/
         return (1.0/totalTasks * (perfectLaxity-(totalLaxity-penalty)));
-        // here we have to implement an algorithm that calculates the global cost of all
-        // the processors together, so that we can have a cost of a configuration
-        // meaning the global cost.
-        // the cost is going to be calculated for the global situation, so globally (for
-        // all processors etc) how is it?
 
-        //
-        /*
-         * Ntotal =0; //total number of non schedulable tasks call the WRCT function
-         * that is going to update the WRCT of each task for each core and do Ntotal +=
-         * the result of each call cost = Ntotal;
-         */
     }
 
-    // exchange tasks between two cores
-    /*Task[] exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
-	{
-		Task[] exchangedTasks = new Task[2];
-		Task taskA = coreA.getRandomTask();
-		Task taskB = coreB.swapRandomTask(taskA);
-		coreA.addTask(taskB);
-		coreA.sortTasks();
-		coreB.sortTasks();
-		
-		exchangedTasks[0]=taskA;
-		exchangedTasks[1]=taskB;
-		
-		return exchangedTasks;
-	}*/
 
-    //version 2 : just move a task to another :
+
+    // just move a task to another :
     Task exchangeRandomTasks(Core coreA, Core coreB) // -------- not implemented yet
     {
-        //Task[] exchangedTasks = new Task[2];
         Task taskA = coreA.getRandomTask();
-        //Task taskB = coreB.swapRandomTask(taskA);
-        //coreA.addTask(taskB);
+
         coreB.addTask(taskA);
         coreA.sortTasks();
         coreB.sortTasks();
 
-        //exchangedTasks[0]=taskA;
-        //exchangedTasks[1]=taskB;
-
-        //return exchangedTasks;
         return taskA;
     }
 
 
-    /*void undoExchange(Task[] tasks, Core coreA, Core coreB) {
 
-        coreA.removeTaskById(tasks[1].getId());
-        coreB.removeTaskById(tasks[0].getId());
-        coreA.addTask(tasks[0]);
-        coreB.addTask(tasks[1]);
 
-        coreA.sortTasks();
-        coreB.sortTasks();
-
-    }*/
-
-    //version 2: just re-adding the task to the core
+    // just re-adding the task to the core
     void undoExchange(Task task, Core coreA, Core coreB) {
 
         //coreA.removeTaskById(tasks[1].getId());
@@ -132,91 +76,34 @@ public class Algorithms {
 
     }
 
-    //take an mcp and return the core that has the lowest utilization rate
-    Core lessUtil(int mcp)
-    {
-        double minUtil = 100;
-        double util = 0;
-        Core chosenCore = mcps.get(mcp).getCore(0);
-        for(Core core : mcps.get(mcp).getCores()) {
-            for (Task task : core.getTasks()) {
-                util += (task.getWCET() * core.getWCETFactor()) / task.getPeriod();
-            }
-            if(util < minUtil){
-                minUtil = util;
-                chosenCore = core;
-            }
-            util = 0;
-        }
-
-        return chosenCore;
-    }
-
-    Core mostUtil(int mcp)
-    {
-        double maxUtil = 0;
-        double util = 0;
-        Core chosenCore = mcps.get(mcp).getCore(0);
-        for(Core core : mcps.get(mcp).getCores()) {
-            for (Task task : core.getTasks()) {
-                util += (task.getWCET() * core.getWCETFactor()) / task.getPeriod();
-            }
-            if(util > maxUtil){
-                maxUtil = util;
-                chosenCore = core;
-            }
-            util = 0;
-        }
-
-        return chosenCore;
-    }
-    //
-
-    // step and simulatedAnnealing are heavily inspired by peportier's algorithms on
-    // his git repository as he was my teacher last year.
 
     // step selects a neighbor configuration (a configuration where we have
     // exchanged 2 tasks) and decides if the algorithm chooses them or not
     //this algorithm is heavily inspired by peportier's git repository as he was one of the teammate's former teacher
     double step(double currentCost, double temperature) {
-        //Task[] switchedTasks = new Task[2];
+
         Task switchedTask;
         int randomCoreA, randomCoreB, randomMCP1, randomMCP2;
         double newCost, costDifference;
         randomMCP1 = (int) (Math.random()*mcps.size()); //pick a random MCP
         randomMCP2 = (int) (Math.random()*mcps.size()); //pick a random MCP
 
-        //System.out.println("MCP1 : "+randomMCP1);
-        //System.out.println("MCP2 : "+randomMCP2);
 
-        //version 2
         randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size()); //pick a random core
         randomCoreB = (int) (Math.random()*mcps.get(randomMCP2).getCores().size()); //pick a random core
 
-       /* Core coreA = mostUtil(randomMCP1);
-        Core coreB = lessUtil(randomMCP2);*/
-
-       // System.out.println("C1 : "+randomCoreA);
-       // System.out.println("C2 : "+randomCoreB);
-        /*while ((randomMCP1==randomMCP2 && coreA.getId() == coreB.getId())
-                || (coreA.getTasks().size() == 0)) // so we don't exchange the same task with itself*/
         while ((randomMCP1==randomMCP2 && randomCoreA  == randomCoreB)
                 || (mcps.get(randomMCP1).getCore(randomCoreA).getTasks().size() == 0))
         {
-            //System.out.println("stuck");
-            //printConfig();
-           /* System.out.println("MCP1 :" +randomMCP1);
-            System.out.println("MCP2 :" +randomMCP2);
-            System.out.println("CoreA :" +randomCoreA);
-            System.out.println("CoreB :" +randomCoreB);*/
+
             randomMCP1 = (int) (Math.random()*mcps.size()); //pick a random MCP
             randomCoreA = (int) (Math.random()*mcps.get(randomMCP1).getCores().size()); // select another core
-            //coreA = mostUtil(randomMCP1);
+
         }
         Core coreA = mcps.get(randomMCP1).getCore(randomCoreA);
         Core coreB = mcps.get(randomMCP2).getCore(randomCoreB);
         switchedTask = exchangeRandomTasks(coreA, coreB); // we exchange the two tasks
-       // switchedTask = exchangeRandomTasks(coreA, coreB);
+
         newCost = cost(); // we calculate the cost of the new configuration
         double costDiff = newCost - currentCost; // the difference between the costs
         if (costDiff < 0) // the new cost is lower than the current one, they we definitely make the move
@@ -263,7 +150,6 @@ public class Algorithms {
             bestCost = currentCost; // the best cost is the current cost
             while (timer != 0) { // we still have time at this temperature
                 currentCost = step(currentCost, temperature); // we calculate the currentcost
-                //System.out.println("current cost : "+ currentCost);
                 if (currentCost == 0) { // if the cost calculated is equal to zero, it means that we have found the best
                                         // solution we can stop
                     bestCost = currentCost; // the best cost is 0
@@ -286,9 +172,8 @@ public class Algorithms {
             }
             elapsed += spent; // elapsed is the total time spent, so we add to it the time we just spent at
                               // the possible solution
-            System.out.println("At temperature T=" + temperature + ", time spent : " + spent + " out of " + MAXTIME
-                    + ". Total time spent so far :" + elapsed + ". Best cost so far :" + bestCost + "\n");
-            //printConfig();
+          /*  System.out.println("At temperature T=" + temperature + ", time spent : " + spent + " out of " + MAXTIME
+                    + ". Total time spent so far :" + elapsed + ". Best cost so far :" + bestCost + "\n");*/
             spent = (int) Math.floor(BETA * spent); // we spend more time at a lower temperature (BETA>1)
             timer = spent;
             temperature = temperature * ALPHA; // we decrease the temperature (ALPHA<1)
@@ -385,7 +270,7 @@ public class Algorithms {
 			exporter.addMCP(mcp);
 		}
 		
-		exporter.exportTasksToXML("/Users/rsm/Documents/system-optimization/Exercise/sysopt-exercise/small-test.xml");
+		exporter.exportTasksToXML("./small-test.xml");
 		algo.printConfig();
 		algo.printLaxity();
 		

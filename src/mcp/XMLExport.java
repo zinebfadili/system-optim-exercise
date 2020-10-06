@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -18,24 +19,25 @@ public class XMLExport {
 
     private ArrayList<MCP> mcps;
 
-    public XMLExport(){
+    public XMLExport() {
         this.mcps = new ArrayList<MCP>();
     }
 
-    public XMLExport(ArrayList<MCP> mcps){
+    public XMLExport(ArrayList<MCP> mcps) {
         this.mcps = mcps;
     }
 
-    public void addMCP(MCP mcp){
+    public void addMCP(MCP mcp) {
         this.mcps.add(mcp);
     }
 
     /**
      * Method
+     *
      * @param path
      */
-    public void exportTasksToXML(String path){
-        try{
+    public void exportTasksToXML(String path) {
+        try {
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
@@ -44,15 +46,14 @@ public class XMLExport {
             document.appendChild(root);
 
             // we loop through the different mcps
-            for(MCP mcp : this.mcps){
+            for (MCP mcp : this.mcps) {
                 int mcpId = mcp.getId();
                 // we loop through the different cores of the mcp
-                for (Core core : mcp.getCores()){
+                for (Core core : mcp.getCores()) {
                     int coreId = core.getId();
                     // we finally loop over the tasks of the core
-                    for(Task task : core.getTasks()){
+                    for (Task task : core.getTasks()) {
                         int taskId = task.getId();
-                        //int WCRT = core.getWCRT(taskId);
                         int WCRT = task.getWCRT();
 
                         // creating the task node
@@ -83,7 +84,7 @@ public class XMLExport {
             }
 
             int totalLaxity = 0;
-            for(MCP m : this.mcps) totalLaxity += m.getLaxity();
+            for (MCP m : this.mcps) totalLaxity += m.getLaxity();
 
             Element element = document.getDocumentElement();
             Comment comment = document.createComment("Total Laxity: " + totalLaxity);
@@ -93,9 +94,10 @@ public class XMLExport {
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource domSource = new DOMSource(document);
             StreamResult streamResult = new StreamResult(new File(path));
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(domSource, streamResult);
 
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
