@@ -1,6 +1,5 @@
 package mcp;
 
-
 public class Task implements Comparable<Task>{
 
 private Long deadline;
@@ -81,5 +80,6 @@ private Integer priority;
         WCET = wCET;
         this.priority = priority;
     }
+    
 
 }

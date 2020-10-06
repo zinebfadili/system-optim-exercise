@@ -6,7 +6,6 @@ import mcp.Task;
 import java.util.Collections;
 public class PriorityAlgorithm {
     List<Task> tasks;
-
     
     public List<Task> SetPriorities()
     {
